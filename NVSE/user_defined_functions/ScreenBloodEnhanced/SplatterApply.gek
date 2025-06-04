@@ -1,0 +1,149 @@
+int iType
+int iBlood
+int iCorpse
+
+float fDamage
+float fDamageMin
+float fDamageMax
+float fDamageMul
+float fDistance
+float fDistanceMax
+float fHeading
+float fHeadingMax
+
+float fSplatter
+float fSize
+float fOpacity
+float fDuration
+
+ref rTarget
+ref rWeapon
+ref rExpIMOD
+
+string_var sAlpha
+string_var sFlare
+string_var sColor
+
+begin Function {}
+
+	Goo1.AuxVarSetFlt "*ScrBld_Timer" 0 0
+
+	; Validate ref
+	if eval IsReference (rTarget = Goo1.AuxVarGetRef "*ScrBld_Cache" 0) == 0
+		return
+	endif
+
+	; Validate POV
+	if eval (iType = Goo1.AuxVarGetFlt "*ScrBld_INI" 5) < 2 && iType != IsPC1stPerson
+		return
+	endif
+
+	; Hide corpse splatter
+	if eval (iCorpse = Goo1.AuxVarGetFlt "*ScrBld_Cache" 1) && Goo1.AuxVarGetFlt "*ScrBld_INI" 6 == 0
+		return
+	endif
+
+	; Splatter textures
+	sAlpha = "Textures\Stentorious\ScreenBloodEnhanced\Alpha.dds"
+	sFlare = "Textures\Stentorious\ScreenBloodEnhanced\Flare.dds"
+	sColor = "Textures\Stentorious\ScreenBloodEnhanced\Color_"
+	if eval (iType = rTarget.GetImpactMaterialType) == 11
+		sColor += "Glow.dds"
+		rExpIMOD = BloodGlowISFX
+	elseif eval iType == 10
+		sColor += "Bug.dds"
+		rExpIMOD = BloodISFXd
+	else
+		sColor += "Red.dds"
+		rExpIMOD = BloodISFXd
+	endif
+
+	; Damage calculation
+	fDamageMin = Goo1.AuxVarGetFlt "*ScrBld_INI" 3
+	fDamageMax = (Goo1.AuxVarGetFlt "*ScrBld_INI" 4) - fDamageMin
+	fDamage = (Goo1.AuxVarGetFlt "*ScrBld_Cache" 2) - fDamageMin
+
+	; Auto melee fix
+	rWeapon = Goo1.AuxVarGetRef "*ScrBld_Cache" 5
+	if eval (iType = GetWeapType rWeapon) < 3 && GetWeaponIsAutomatic rWeapon
+		fDamage = fDamageMax / 2
+	endif
+
+	if eval fDamage < 0
+		fDamageMul = 0
+	elseif eval fDamageMax == 0
+		fDamageMul = 1
+	else
+		fDamageMul = GetMinOf 1 (fDamage / fDamageMax)
+	endif
+
+	; Default
+	fSplatter = Goo1.AuxVarGetFlt "*ScrBld_SPL" 0
+	fSize = 1
+	fOpacity = 0.5
+
+	; Corpse hit
+	if eval iCorpse
+		if eval iType == 0
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 4
+		elseif eval iType < 3 || iType == 13
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 3
+		else
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 2
+		endif
+
+	; Alive/on death hit
+	else
+		if eval rTarget.IsLimbGone 0
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 7	; Body exploded (Bloody mess)
+		elseif eval Goo1.AuxVarGetFlt "*ScrBld_Cache" 4 > 0
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 6	; Limb exploded
+		elseif eval Goo1.AuxVarGetFlt "*ScrBld_Cache" 3 > 0
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 5	; Limb dismembered
+		elseif eval iType == 0
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 4	; Unarmed
+		elseif eval iType < 3 || iType == 13
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 3	; Melee & Thrown
+		else
+			fSplatter *= Goo1.AuxVarGetFlt "*ScrBld_SPL" 2	; Projectile
+		endif
+	endif
+
+	; Settings
+	fDistanceMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 0
+	fHeadingMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 1
+
+	; Trigger splatter
+	if eval (fDistance = (GetMaxOf 0 (fDistanceMax - (Player.GetDistance3D rTarget))) / fDistanceMax) > 0 && (fHeading = (GetMaxOf 0 (fHeadingMax - (Abs (Player.GetHeadingAngle rTarget)))) / fHeadingMax) > 0
+
+		; Splatter strength
+		fSplatter *= fDamageMul
+		fSplatter *= ApplyEasingAlt fDistance 2 0
+		fSplatter = Flr ((fSplatter * (ApplyEasingAlt fHeading 2 1)) + 0.5)
+		if eval fSplatter > 0
+
+			; Splatter duration
+			fDuration = Goo1.AuxVarGetFlt "*ScrBld_SPL" 1
+			if eval GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" > 0
+				fDuration *= Goo1.AuxVarGetFlt "*ScrBld_MOD" 0
+			elseif eval GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible"
+				fDuration *= Goo1.AuxVarGetFlt "*ScrBld_MOD" 1
+			endif
+
+			TriggerScreenSplatterEx fSplatter fDuration fSize fOpacity (sAlpha) (sColor) (sFlare) 0
+
+			; Splatter cooldown
+			CallAfter (Goo1.AuxVarGetFlt "*ScrBld_INI" 2) (CompileScript "ScreenBloodEnhanced\SplatterReset.gek")
+			Goo1.AuxVarSetFlt "*ScrBld_Timer" 1 1
+
+		endif
+	endif
+
+	; Apply limb explosion IMOD
+	if eval iCorpse == 0 && Goo1.AuxVarGetFlt "*ScrBld_SPL" 8 && rTarget.GetDead && (Goo1.AuxVarGetFlt "*ScrBld_SPL" 6 || rTarget.IsLimbGone 0)
+		IMOD rExpIMOD (ApplyEasingAlt fDistance 2 0)
+	endif
+
+	sv_Destruct sColor sAlpha sFlare
+
+end

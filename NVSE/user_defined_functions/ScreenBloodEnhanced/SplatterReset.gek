@@ -1,0 +1,4 @@
+begin Function {}
+	Goo1.AuxVarSetFlt "*ScrBld_Timer" 0 1
+	Goo1.AuxVarErase "*ScrBld_Cache"
+end

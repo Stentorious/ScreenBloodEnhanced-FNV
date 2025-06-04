@@ -1,0 +1,61 @@
+int iPOVFlag
+;int iHitType
+;int iType
+
+float fDamage
+float fDamageMin
+float fDamageMax
+float fDamageMul
+
+float fDistance
+float fDistanceMax
+float fHeading
+float fHeadingMax
+
+ref rTarget
+ref rProjectile
+ref rWeapon
+
+; Screen Splatter
+float fSplatter
+float fDuration
+float fSize
+float fOpacity
+string_var sColor
+string_var sAlpha
+string_var sFlare
+
+begin Function {}
+
+	if eval IsReference (rTarget = This) == 0 || rTarget.GetCreatureType == 6 || Goo1.AuxVarGetFlt "*ScrBld_Timer" 1
+		return
+	endif
+
+	; POV visibility flags
+	if eval (iPOVFlag = Goo1.AuxVarGetFlt "*ScrBld_INI" 5) < 2 && iPOVFlag != IsPC1stPerson
+		return
+	endif
+
+	; Attack penetrates armor
+	if eval rTarget.GetArmourPenetrated
+		fDamage = rTarget.GetHitHealthDamage
+	endif
+
+	; On first hit in the frame
+	if eval Goo1.AuxVarGetFlt "*ScrBld_Timer" 0 == 0
+		Goo1.AuxVarSetFlt "*ScrBld_Timer" 1 0
+		Goo1.AuxVarSetRef "*ScrBld_Cache" rTarget 0
+		Goo1.AuxVarSetFlt "*ScrBld_Cache" (rTarget.GetDead) 1
+		Goo1.AuxVarErase "*ScrBld_Cache" 5
+		CallAfterFrames 0 (CompileScript "ScreenBloodEnhanced\SplatterApply.gek")
+	endif
+
+	Goo1.AuxVarSetFlt "*ScrBld_Cache" ((Goo1.AuxVarGetFlt "*ScrBld_Cache" 2) + fDamage) 2
+	Goo1.AuxVarSetFlt "*ScrBld_Cache" ((Goo1.AuxVarGetFlt "*ScrBld_Cache" 3) + (rTarget.GetHitExtendedFlag 4)) 3
+	Goo1.AuxVarSetFlt "*ScrBld_Cache" ((Goo1.AuxVarGetFlt "*ScrBld_Cache" 4) + (rTarget.GetHitExtendedFlag 5)) 4
+
+	if eval IsBaseForm (rWeapon = rTarget.GetHitWeapon)
+		Goo1.AuxVarSetRef "*ScrBld_Cache" rWeapon 5
+	endif
+
+end
