@@ -1,0 +1,20 @@
+int iKeyID
+
+begin Function {iKeyID}
+
+	if eval MenuMode || Player.GetIsRagdolled || Player.GetDead || GetPipBoyMode != 0 || Player.IsAnimSequencePlaying "ScreenBloodEnhanced\ScreenWipe.kf" || Player.IsAnimSequencePlaying "RealtimePipBoy\Check.kf" || Player.IsIdlePlaying || Player.GetAnimAction > -1
+		return
+	endif
+
+	; Disable controls
+	if eval GSIV 0 > 0
+		SetSmoothIronsightsValue 0 0
+	endif
+	DisablePlayerControlsAltEx 30100
+
+	; Play anim
+	Player.PlayAnimationPath "ScreenBloodEnhanced\ScreenWipe.kf" 1
+	Goo1.AuxVarSetFlt "*ScrBld_Count" 0
+	CallAfter 1.55 ({} => EnablePlayerControlsAltEx 30100)
+
+end

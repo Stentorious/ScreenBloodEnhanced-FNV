@@ -1,0 +1,10 @@
+ref rUnequipper
+ref rUnequipped
+
+begin Function {rUnequipper, rUnequipped}
+	CallAfter 0 (begin function {}
+		if eval GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" == 0 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" == 0 && GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" == 0
+			ClearScreenSplatter
+		endif
+	end) 1
+end

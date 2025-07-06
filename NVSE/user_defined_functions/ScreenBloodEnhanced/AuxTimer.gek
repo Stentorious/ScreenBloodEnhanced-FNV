@@ -1,0 +1,16 @@
+string_var sTimer
+ref rOwner
+
+begin function {sTimer, rOwner}
+
+	if eval sTimer == "*ScrBld_Count"
+		Goo1.AuxVarSetFlt "*ScrBld_Count" 0
+	elseif eval sTimer == "*ScrBld_Combat"
+		if eval Goo1.AuxVarGetFlt "*ScrBld_Count" > 0 && Player.IsInCombat == 0
+			Call (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 0
+		endif
+	endif
+
+	sv_Destruct sTimer
+
+end
