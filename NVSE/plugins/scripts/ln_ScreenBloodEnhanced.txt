@@ -34,11 +34,13 @@ Goo1.AuxVarSetFlt "*ScrBld_Count" 0
 Player.SetOnTimerStopHandler 1 (CompileScript "ScreenBloodEnhanced\AuxTimer.gek") "*ScrBld_Count"
 Player.SetOnTimerStopHandler 1 (CompileScript "ScreenBloodEnhanced\AuxTimer.gek") "*ScrBld_Combat"
 
-; Clear splatter on death if 1st person only flag
+; Clear splatter on death if 1st person only
 SetJohnnyOnDyingEventHandler 1 (begin Function {ref rActor}
-	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 5 == 1
-		ClearScreenSplatter
+	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 12
+		return
 	endif
+	ClearScreenSplatter
+	Console "ClearScreenBlood"
 end) 0 Player
 
 ; On game Restart
@@ -52,7 +54,7 @@ if eval GetNVSEVersion < 6 || (GetNVSEVersion == 6 && GetNVSERevision < 4)
 	MessageBoxEx "Screen Blood Enhanced missing requirement!%rInstall xNVSE 6.4.0+."
 	return
 endif
-if GetPluginVersion "JohnnyGuitarNVSE" < 360
+if GetPluginVersion "JohnnyGuitarNVSE" < 518
 	MessageBoxEx "Screen Blood Enhanced missing requirement!%rInstall latest JohnnyGuitar NVSE plugin."
 	return
 endif
@@ -66,7 +68,6 @@ if GetPluginVersion "kNVSE" < 37
 endif
 
 ; Set default game settings
-SetNumericGameSetting "iBloodSplatterMaxCount" 0
 SetNumericGameSetting "fBloodSplatterMinSize" 0.12
 SetNumericGameSetting "fBloodSplatterMaxSize" 0.18
 SetNumericGameSetting "fBloodSplatterMinOpacity" 0.5
@@ -76,76 +77,75 @@ SetNumericGameSetting "fBloodSplatterMaxOpacity2" 0.6
 SetNumericGameSetting "fBloodSplatterOpacityChance" 0.3
 
 ; Set flare traits
-SetNumericGameSetting "fBloodSplatterFlareSize" ((GetINIFloat_Cached "BloodSplatter:fFlareSize" "Stentorious\ScreenBloodEnhanced.ini") * 0.0650)
-SetNumericGameSetting "fBloodSplatterFlareMult" (GetINIFloat_Cached "BloodSplatter:fFlareAlpha" "Stentorious\ScreenBloodEnhanced.ini")
+SetNumericGameSetting "fBloodSplatterFlareSize" (GetINIFloat_Cached "BloodSplatter:fFlareSize" "Stentorious\ScreenBloodEnhanced.ini" 0.065)
+SetNumericGameSetting "fBloodSplatterFlareMult" (GetINIFloat_Cached "BloodSplatter:fFlareAlpha" "Stentorious\ScreenBloodEnhanced.ini" 0.95)
 
 ; Visibility settings
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 ((GetINIFloat_Cached "Visibility:fDistance" "Stentorious\ScreenBloodEnhanced.ini") * 69.99104)) 0
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fHeadingAngle" "Stentorious\ScreenBloodEnhanced.ini")) 1
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fCooldown" "Stentorious\ScreenBloodEnhanced.ini")) 2
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fDamageMin" "Stentorious\ScreenBloodEnhanced.ini")) 3
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf (Goo1.AuxVarGetFlt "*ScrBld_INI" 3) (GetINIFloat_Cached "Visibility:fDamageMax" "Stentorious\ScreenBloodEnhanced.ini")) 4
-Goo1.AuxVarSetFlt "*ScrBld_INI" (Clamp (GetINIFloat_Cached "Visibility:iPOV" "Stentorious\ScreenBloodEnhanced.ini") 0 2) 5
-Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:bCorpse" "Stentorious\ScreenBloodEnhanced.ini") 6
-Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:bRobot" "Stentorious\ScreenBloodEnhanced.ini") 7
-if eval GetINIFloat_Cached "Visibility:bRequireOverlay" "Stentorious\ScreenBloodEnhanced.ini"
-	Goo1.AuxVarSetFlt "*ScrBld_INI" 1 8
-	SetEventHandler "OnActorUnequip" (CompileScript "ScreenBloodEnhanced\OnUnequip.gek") "first"::Player
-else
-	Goo1.AuxVarSetFlt "*ScrBld_INI" 0 8
-endif
-Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "General:fAutoWipe" "Stentorious\ScreenBloodEnhanced.ini")) 9
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fDistance" "Stentorious\ScreenBloodEnhanced.ini" 4)) 0
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fHeadingAngle" "Stentorious\ScreenBloodEnhanced.ini" 70)) 1
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fCooldown" "Stentorious\ScreenBloodEnhanced.ini" 0.1)) 2
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Visibility:fDamageMin" "Stentorious\ScreenBloodEnhanced.ini" 2)) 3
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf (Goo1.AuxVarGetFlt "*ScrBld_INI" 3) (GetINIFloat_Cached "Visibility:fDamageMax" "Stentorious\ScreenBloodEnhanced.ini" 20)) 4
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:b1stPerson" "Stentorious\ScreenBloodEnhanced.ini" 1) 5
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:bCorpse" "Stentorious\ScreenBloodEnhanced.ini" 1) 6
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:bRobot" "Stentorious\ScreenBloodEnhanced.ini" 1) 7
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:bRequireOverlay" "Stentorious\ScreenBloodEnhanced.ini" 0) 8
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Controls:bAutoWipe" "Stentorious\ScreenBloodEnhanced.ini" 0) 9
+Goo1.AuxVarSetFlt "*ScrBld_INI" (Flr (GetMaxOf 0 (GetINIFloat_Cached "Controls:iKeybind" "Stentorious\ScreenBloodEnhanced.ini" 35))) 10
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Controls:bControllerSupport" "Stentorious\ScreenBloodEnhanced.ini" 1) 11
+Goo1.AuxVarSetFlt "*ScrBld_INI" (eval GetINIFloat_Cached "Visibility:b3rdPerson" "Stentorious\ScreenBloodEnhanced.ini" 0) 12
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetINIFloat_Cached "General:iEffectReceive" "Stentorious\ScreenBloodEnhanced.ini" 2) 13
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetINIFloat_Cached "General:iEffectDeal" "Stentorious\ScreenBloodEnhanced.ini" 1) 14
+Goo1.AuxVarSetFlt "*ScrBld_INI" (GetMaxOf 0 (GetINIFloat_Cached "Controls:fAutoWipeDelay" "Stentorious\ScreenBloodEnhanced.ini" 2.5)) 15
 
 ; Splatter settings
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:iSplatterCount" "Stentorious\ScreenBloodEnhanced.ini")) 0
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fDuration" "Stentorious\ScreenBloodEnhanced.ini")) 1
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fProjectile" "Stentorious\ScreenBloodEnhanced.ini")) 2
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fMelee" "Stentorious\ScreenBloodEnhanced.ini")) 3
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fUnarmed" "Stentorious\ScreenBloodEnhanced.ini")) 4
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fLimbDismembered" "Stentorious\ScreenBloodEnhanced.ini")) 5
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fLimbExploded" "Stentorious\ScreenBloodEnhanced.ini")) 6
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fBodyExploded" "Stentorious\ScreenBloodEnhanced.ini")) 7
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (eval GetINIFloat_Cached "General:bRestoreIMOD" "Stentorious\ScreenBloodEnhanced.ini") 8
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fSizeMin" "Stentorious\ScreenBloodEnhanced.ini")) 9
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fSizeMax" "Stentorious\ScreenBloodEnhanced.ini")) 10
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fAlphaMin" "Stentorious\ScreenBloodEnhanced.ini")) 11
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fAlphaMax" "Stentorious\ScreenBloodEnhanced.ini")) 12
-Goo1.AuxVarSetFlt "*ScrBld_SPL" (eval GetINIFloat_Cached "BloodSplatter:bUseBaseGameTexturePath" "Stentorious\ScreenBloodEnhanced.ini") 13
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:iSplatterCount" "Stentorious\ScreenBloodEnhanced.ini" 7)) 0
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fDuration" "Stentorious\ScreenBloodEnhanced.ini" 5)) 1
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fProjectile" "Stentorious\ScreenBloodEnhanced.ini" 0.8)) 2
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fMelee" "Stentorious\ScreenBloodEnhanced.ini" 1)) 3
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fUnarmed" "Stentorious\ScreenBloodEnhanced.ini" 0.6)) 4
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fLimbDismembered" "Stentorious\ScreenBloodEnhanced.ini" 2)) 5
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fLimbExploded" "Stentorious\ScreenBloodEnhanced.ini" 5)) 6
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fBodyExploded" "Stentorious\ScreenBloodEnhanced.ini" 10)) 7
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (eval GetINIFloat_Cached "General:bRestoreIMOD" "Stentorious\ScreenBloodEnhanced.ini" 1) 8
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fSizeMin" "Stentorious\ScreenBloodEnhanced.ini" 0.5)) 9
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fSizeMax" "Stentorious\ScreenBloodEnhanced.ini" 1.25)) 10
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fAlphaMin" "Stentorious\ScreenBloodEnhanced.ini" 0.75)) 11
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fAlphaMax" "Stentorious\ScreenBloodEnhanced.ini" 1)) 12
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (eval GetINIFloat_Cached "General:bUseBaseGameTexturePath" "Stentorious\ScreenBloodEnhanced.ini" 0) 13
+Goo1.AuxVarSetFlt "*ScrBld_SPL" (GetMaxOf 0 (GetINIFloat_Cached "BloodSplatter:fDurationOverlay" "Stentorious\ScreenBloodEnhanced.ini" 60)) 14
 
-; Mod support settings
-Goo1.AuxVarSetFlt "*ScrBld_MOD" (GetMaxOf 0 (GetINIFloat_Cached "ModSupport:fHelmetOverlay" "Stentorious\ScreenBloodEnhanced.ini")) 0
-Goo1.AuxVarSetFlt "*ScrBld_MOD" (GetMaxOf 0 (GetINIFloat_Cached "ModSupport:fModernNightVision" "Stentorious\ScreenBloodEnhanced.ini")) 1
+; Disable vanilla screen blood on damage received
+if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 13 != 1
+	SetNumericGameSetting "fBloodSplatterCountBase" 0
+	SetNumericGameSetting "fBloodSplatterCountDamageMult" 0
+endif
 
 ; Event handlers
 SetOnHitEventHandler (CompileScript "ScreenBloodEnhanced\OnHit.gek") 1
+SetEventHandler "OnActorUnequip" (CompileScript "ScreenBloodEnhanced\OnUnequip.gek") "first"::Player
 
 ; Auto wipe
-if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 9 > 0
-	SetEventHandler "OnCombatEnd" ({ref rTarget, ref rSource} => Player.AuxTimerStart "*ScrBld_Combat" (Goo1.AuxVarGetFlt "*ScrBld_INI" 9) 14)
-endif
+SetEventHandler "OnCombatEnd" (begin function {ref rTarget, ref rSource}
+	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 9 == 0
+		return
+	endif
+	Player.AuxTimerStart "*ScrBld_Combat" (Goo1.AuxVarGetFlt "*ScrBld_INI" 15) 14
+end)
 
-; Keyboard
-if eval (int iKeyID = GetINIFloat_Cached "General:iKeybind" "Stentorious\ScreenBloodEnhanced.ini") > 0
+; KB&M keybind
+if eval (int iKeyID = Goo1.AuxVarGetFlt "*ScrBld_INI" 10) > 0
 	SetOnKeyDownEventHandler (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 1 iKeyID
 endif
 
-; Controller
-if eval GetINIFloat_Cached "General:bControllerSupport" "Stentorious\ScreenBloodEnhanced.ini"
-	SetEventHandler "OnControlDown:27" (begin function {int iKeyCode}
-		if eval GetController
-			DC 13
-		endif
-	end)
-	SetEventHandler "OnControlUp:27" (begin function {int iKeyCode}
-		if eval GetController
-			EC 13
-		endif
-	end)
-	SetEventHandler "OnControlDown:13" (begin function {int iKeyCode}
-		if eval GetController && IsControlPressed 27
-			Call (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 0
-		endif
-	end)
-endif
+; Controller support
+SetOnControlDownEventHandler (begin function {int iControlID}
+	if eval GetController == 0 || IsControlPressed 27 == 0 || Goo1.AuxVarGetFlt "*ScrBld_INI" 11 == 0
+		return
+	endif
+	DC 13
+	CallAfterFrames 0 ({} => EC 13)
+	Call (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 0
+end) 1 13
 
 CloseFileSO "Stentorious\ScreenBloodEnhanced.ini" 0

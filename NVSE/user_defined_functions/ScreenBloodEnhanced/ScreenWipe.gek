@@ -2,7 +2,7 @@ int iKeyID
 
 begin Function {iKeyID}
 
-	if eval MenuMode || Player.GetIsRagdolled || Player.GetDead || GetPipBoyMode != 0 || Player.IsAnimSequencePlaying "ScreenBloodEnhanced\ScreenWipe.kf" || Player.IsAnimSequencePlaying "RealtimePipBoy\Check.kf" || Player.IsIdlePlaying || Player.GetAnimAction > -1
+	if eval MenuMode || Player.GetIsRagdolled || Player.GetDead || GetPipBoyMode != 0 || Player.IsAnimSequencePlaying "ScreenBloodEnhanced\ScreenWipe.kf" || Player.IsAnimSequencePlaying "RealtimePipBoy\Check.kf" || Player.IsIdlePlaying || Player.GetAnimAction > -1 || IsInKillCam; || GetPlayerControlsDisabled 1 1 0 1 1 0 0
 		return
 	endif
 
@@ -11,6 +11,9 @@ begin Function {iKeyID}
 		SetSmoothIronsightsValue 0 0
 	endif
 	DisablePlayerControlsAltEx 30100
+
+	; Disable POV switching
+	AuxTimerStop "*Freelook_POV"
 
 	; Play anim
 	Player.PlayAnimationPath "ScreenBloodEnhanced\ScreenWipe.kf" 1

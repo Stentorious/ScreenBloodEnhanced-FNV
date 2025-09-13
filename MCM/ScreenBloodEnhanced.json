@@ -1,0 +1,347 @@
+{
+    "modName": "ScreenBloodEnhanced",
+    "displayName": "$modDisplayName",
+	"description": "$modDescription",
+    "saveFile": "Stentorious/ScreenBloodEnhanced.ini",
+    "minMCMVersion": 1.00,
+    "minModVersion": 1.00,
+    "requirements": [
+        { "type": "file", "file": "NVSE/plugins/scripts/ln_ScreenBloodEnhanced.txt" }
+    ],
+    "submenus": {
+        "1": {
+            "listTitle": "$GeneralSettings",
+            "pageTitle": "$GeneralSettings",
+            "active": 1,
+            "columns": 1,
+            "enable": 1,
+            "options": {
+
+                "1": {
+                    "title": "$General",
+                    "enable": 1,
+                    "type": 0
+				},
+                "2": {
+                    "title": "$ScreenBloodTaken",
+                    "enable": 1,
+                    "type": 1,
+                    "mouse": "$ScreenBloodTakenMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 13, "configINI": "General:iEffectReceive", "default": 2 }],
+                    "strings" : [ "$Disabled", "$Vanilla", "$modDisplayName" ],
+                    "call": { "type": "file", "value": "ScreenBloodEnhanced/MCMExtender/UpdateOption.gek" }
+                },
+                "3": {
+                    "title": "$ScreenBloodDealt",
+                    "enable": 1,
+                    "type": 1,
+                    "mouse": "$ScreenBloodDealtMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 14, "configINI": "General:iEffectDeal", "default": 1 }],
+                    "strings" : [ "$Disabled", "$modDisplayName" ]
+                },
+                "4": {
+                    "title": "$RestoreLimbExplosion",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$RestoreLimbExplosionMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 8, "configINI": "General:bRestoreIMOD", "default": 1 }]
+                },
+                "5": {
+                    "title": "$UseVanillaTextures",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$UseVanillaTexturesMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 13, "configINI": "General:bUseBaseGameTexturePath", "default": 0 }]
+                },
+                "7": {
+                    "title": "$Controls",
+                    "enable": 1,
+                    "type": 0
+				},
+                "8": {
+                    "title": "$Keybind",
+                    "enable": 1,
+                    "type": 3,
+                    "mouse": "$KeybindMouse",
+                    "vars": [{ "configINI": "Controls:iKeybind", "default": 35 }],
+                    "call": { "type": "file", "value": "ScreenBloodEnhanced/MCMExtender/UpdateOption.gek" }
+                },
+                "9": {
+                    "title": "$ControllerSupport",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$ControllerSupportMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 11, "configINI": "Controls:bControllerSupport", "default": 1 }]
+                },
+                "10": {
+                    "title": "$AutoWipe",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$AutoWipeMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 9, "configINI": "Controls:bAutoWipe", "default": 0 }]
+                },
+                "11": {
+                    "title": "$AutoWipeDelay",
+                    "enable": 1,
+                    "type": 2.5,
+                    "suffix": "s",
+                    "state": { "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 9, "value": 1, "disable": 1 },
+                    "mouse": "$AutoWipeDelayMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 15, "configINI": "Controls:fAutoWipeDelay", "default": 2.5 }],
+                    "scale": { "valueDecimal": 1, "valueIncrement": 0.1, "valueMin": 0, "valueMax": 10, "suffix": "s" }
+                }
+            }
+        },
+        "2": {
+            "listTitle": "$Effect",
+            "pageTitle": "$Effect",
+            "columns": 2,
+            "enable": 1,
+            "options": {
+
+                "1": {
+                    "title": "$Visibility",
+                    "enable": 1,
+                    "type": 0
+				},
+                "3": {
+                    "title": "$Distance",
+                    "enable": 1,
+                    "type": 2.5,
+                    "mouse": "$DistanceMouse",
+                    "suffix": "m",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 0, "configINI": "Visibility:fDistance", "default": 4 }],
+                    "scale": { "valueDecimal": 1, "valueIncrement": 0.1, "valueMin": 0, "valueMax": 10, "suffix": "m" }
+                },
+                "5": {
+                    "title": "$HeadingAngle",
+                    "enable": 1,
+                    "type": 2.5,
+                    "mouse": "$HeadingAngleMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 1, "configINI": "Visibility:fHeadingAngle", "default": 70 }],
+                    "scale": { "valueDecimal": 0, "valueIncrement": 1, "valueMin": 0, "valueMax": 180 }
+                },
+                "7": {
+                    "title": "$Cooldown",
+                    "enable": 1,
+                    "type": 2.5,
+                    "mouse": "$CooldownMouse",
+                    "suffix": "s",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 2, "configINI": "Visibility:fCooldown", "default": 0.1 }],
+                    "scale": { "valueDecimal": 2, "valueIncrement": 0.01, "valueMin": 0, "valueMax": 1, "suffix": "s" }
+                },
+                "9": {
+                    "title": "$DamageThreshold",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$DamageThresholdMouse",
+                    "vars": [
+                        { "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 3, "configINI": "Visibility:fDamageMin", "default": 2 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 4, "configINI": "Visibility:fDamageMax", "default": 20 }
+                    ],
+                    "scale": {
+                        "setting1": "Min",
+                        "setting2": "Max",
+                        "value1Decimal": 0,
+                        "value2Decimal": 0,
+                        "value1Increment": 1,
+                        "value2Increment": 1,
+                        "value1Min": 0,
+                        "value2Min": 10,
+                        "value1Max": 10,
+                        "value2Max": 50
+                    }
+                },
+                "11": {
+                    "title": "$FirstPerson",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$FirstPersonMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 5, "configINI": "Visibility:b1stPerson", "default": 1 }]
+                },
+                "13": {
+                    "title": "$ThirdPerson",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$ThirdPersonMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 12, "configINI": "Visibility:b3rdPerson", "default": 0 }]
+                },
+                "15": {
+                    "title": "$Corpse",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$CorpseMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 6, "configINI": "Visibility:bCorpse", "default": 1 }]
+                },
+                "17": {
+                    "title": "$Robot",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$RobotMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 7, "configINI": "Visibility:bRobot", "default": 1 }]
+                },
+                "19": {
+                    "title": "$Overlay",
+                    "enable": 1,
+                    "type": 5,
+                    "mouse": "$OverlayMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 8, "configINI": "Visibility:bRequireOverlay", "default": 0 }]
+                },
+
+                "2": {
+                    "title": "$Splatter",
+                    "enable": 1,
+                    "type": 0
+				},
+                "4": {
+                    "title": "$Count",
+                    "enable": 1,
+                    "type": 2,
+                    "mouse": "$CountMouse",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 0, "configINI": "BloodSplatter:iSplatterCount", "default": 7 }],
+                    "scale": { "valueDecimal": 0, "valueIncrement": 1, "valueMin": 0, "valueMax": 20 }
+                },
+                "6": {
+                    "title": "$Duration",
+                    "enable": 1,
+                    "type": 2,
+                    "mouse": "$DurationMouse",
+                    "suffix": "s",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 1, "configINI": "BloodSplatter:fDuration", "default": 5 }],
+                    "scale": { "valueDecimal": 0, "valueIncrement": 1, "valueMin": 1, "valueMax": 60, "suffix": "s" }
+                },
+                "8": {
+                    "title": "$DurationOverlay",
+                    "enable": 1,
+                    "type": 2,
+                    "mouse": "$DurationOverlayMouse",
+                    "suffix": "s",
+                    "vars": [{ "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 14, "configINI": "BloodSplatter:fDurationOverlay", "default": 60 }],
+                    "scale": { "valueDecimal": 0, "valueIncrement": 1, "valueMin": 1, "valueMax": 300, "suffix": "s" }
+                },
+                "10": {
+                    "title": "$AttackMultipliers",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$AttackMultipliersMouse",
+                    "vars": [
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 2, "configINI": "BloodSplatter:fProjectile", "default": 0.8 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 3, "configINI": "BloodSplatter:fMelee", "default": 1 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 4, "configINI": "BloodSplatter:fUnarmed", "default": 0.6 }
+                    ],
+                    "scale": {
+                        "setting1": "$Projectile",
+                        "setting2": "$Melee",
+                        "setting3": "$Unarmed",
+                        "value1Decimal": 1,
+                        "value2Decimal": 1,
+                        "value3Decimal": 1,
+                        "value1Increment": 0.1,
+                        "value2Increment": 0.1,
+                        "value3Increment": 0.1,
+                        "value1Min": 0,
+                        "value2Min": 0,
+                        "value3Min": 0,
+                        "value1Max": 2,
+                        "value2Max": 2,
+                        "value3Max": 2
+                    }
+                },
+                "12": {
+                    "title": "$BodyMultipliers",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$BodyMultipliersMouse",
+                    "vars": [
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 5, "configINI": "BloodSplatter:fLimbDismembered", "default": 2 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 6, "configINI": "BloodSplatter:fLimbExploded", "default": 5 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 7, "configINI": "BloodSplatter:fBodyExploded", "default": 10 }
+                    ],
+                    "scale": {
+                        "setting1": "$LimbDismember",
+                        "setting2": "$LimbExplosion",
+                        "setting3": "$BodyExplosion",
+                        "value1Decimal": 1,
+                        "value2Decimal": 1,
+                        "value3Decimal": 1,
+                        "value1Increment": 0.1,
+                        "value2Increment": 0.1,
+                        "value3Increment": 0.1,
+                        "value1Min": 0,
+                        "value2Min": 0,
+                        "value3Min": 0,
+                        "value1Max": 20,
+                        "value2Max": 20,
+                        "value3Max": 20
+                    }
+                },
+                "14": {
+                    "title": "$Size",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$SizeMouse",
+                    "vars": [
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 9, "configINI": "BloodSplatter:fSizeMin", "default": 0.5 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 10, "configINI": "BloodSplatter:fSizeMax", "default": 1.25 }
+                    ],
+                    "scale": {
+                        "setting1": "Min",
+                        "setting2": "Max",
+                        "value1Decimal": 2,
+                        "value2Decimal": 2,
+                        "value1Increment": 0.01,
+                        "value2Increment": 0.01,
+                        "value1Min": 0,
+                        "value2Min": 1,
+                        "value1Max": 1,
+                        "value2Max": 2
+                    }
+                },
+                "16": {
+                    "title": "$Alpha",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$AlphaMouse",
+                    "vars": [
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 11, "configINI": "BloodSplatter:fAlphaMin", "default": 0.75 },
+                        { "form": "Goo1", "auxVar": "*ScrBld_SPL", "key": 12, "configINI": "BloodSplatter:fAlphaMax", "default": 1.0 }
+                    ],
+                    "scale": {
+                        "setting1": "Min",
+                        "setting2": "Max",
+                        "value1Decimal": 2,
+                        "value2Decimal": 2,
+                        "value1Increment": 0.01,
+                        "value2Increment": 0.01,
+                        "value1Min": 0,
+                        "value2Min": 1,
+                        "value1Max": 1,
+                        "value2Max": 2
+                    }
+                },
+                "18": {
+                    "title": "$Flare",
+                    "enable": 1,
+                    "type": 8,
+                    "mouse": "$FlareMouse",
+                    "vars": [
+                        { "gameSetting": "fBloodSplatterFlareSize", "configINI": "BloodSplatter:fFlareSize", "default": 0.065 },
+                        { "gameSetting": "fBloodSplatterFlareMult", "configINI": "BloodSplatter:fFlareAlpha", "default": 0.95 }
+                    ],
+                    "scale": {
+                        "setting1": "Size:",
+                        "setting2": "Alpha:",
+                        "value1Decimal": 3,
+                        "value2Decimal": 2,
+                        "value1Increment": 0.005,
+                        "value2Increment": 0.01,
+                        "value1Min": 0,
+                        "value2Min": 0,
+                        "value1Max": 0.1,
+                        "value2Max": 1
+                    }
+                }
+            }
+        }
+    }
+}

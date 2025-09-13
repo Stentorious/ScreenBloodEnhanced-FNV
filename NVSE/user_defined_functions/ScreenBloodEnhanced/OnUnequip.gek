@@ -2,9 +2,16 @@ ref rUnequipper
 ref rUnequipped
 
 begin Function {rUnequipper, rUnequipped}
+
+	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 8 == 0
+		return
+	endif
+
 	CallAfter 0 (begin function {}
 		if eval GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" == 0 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" == 0 && GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" == 0
 			ClearScreenSplatter
+			Console "ClearScreenBlood"
 		endif
 	end) 1
+
 end

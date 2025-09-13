@@ -1,0 +1,7 @@
+int iControlID
+
+begin Function {iControlID}
+	if eval GetController && IsControlPressed 27
+		Call (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 0
+	endif
+end

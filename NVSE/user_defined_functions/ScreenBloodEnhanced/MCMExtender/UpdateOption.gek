@@ -1,0 +1,36 @@
+float fValue
+int iMenu
+int iSubmenu
+int iOption
+array_var aJSON
+
+int iKeybind
+
+Begin Function {fValue, iMenu, iSubmenu, iOption, aJSON}
+
+	; Update keybind
+	if eval iOption == 8
+		if eval (iKeybind = Goo1.AuxVarGetFlt "*ScrBld_INI" 10) != fValue
+			if eval iKeybind > 0
+				SetOnKeyDownEventHandler (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 0 iKeybind
+			endif
+			if eval fValue > 0
+				SetOnKeyDownEventHandler (CompileScript "ScreenBloodEnhanced\ScreenWipe.gek") 1 fValue
+			endif
+			Goo1.AuxVarSetFlt "*ScrBld_INI" fValue 10
+		endif
+
+	; Update screen blood
+	elseif eval iOption == 2
+		if eval fValue != 1
+			SetNumericGameSetting "fBloodSplatterCountBase" 0
+			SetNumericGameSetting "fBloodSplatterCountDamageMult" 0
+		else
+			SetNumericGameSetting "fBloodSplatterCountBase" 2
+			SetNumericGameSetting "fBloodSplatterCountDamageMult" 0.1
+		endif
+	endif
+
+	aJSON = ar_Null
+
+End

@@ -29,12 +29,19 @@ begin Function {}
 	endif
 
 	; Validate POV
-	if eval (iType = Goo1.AuxVarGetFlt "*ScrBld_INI" 5) < 2 && iType != IsPC1stPerson
+	iType = IsPC1stPerson
+	if eval (Goo1.AuxVarGetFlt "*ScrBld_INI" 5 == 0 && iType == 1) || (Goo1.AuxVarGetFlt "*ScrBld_INI" 12 == 0 && iType == 0)
 		return
 	endif
 
 	; Hide corpse splatter
 	if eval (iCorpse = Goo1.AuxVarGetFlt "*ScrBld_Cache" 1) && Goo1.AuxVarGetFlt "*ScrBld_INI" 6 == 0
+		return
+	endif
+
+	; Weapon blacklist
+	rWeapon = Goo1.AuxVarGetRef "*ScrBld_Cache" 5
+	if eval GetWeaponHasFlag 14 rWeapon
 		return
 	endif
 
@@ -66,7 +73,6 @@ begin Function {}
 	fDamage = (Goo1.AuxVarGetFlt "*ScrBld_Cache" 2) - fDamageMin
 
 	; Auto melee fix
-	rWeapon = Goo1.AuxVarGetRef "*ScrBld_Cache" 5
 	if eval (iType = GetWeapType rWeapon) < 3 && GetWeaponIsAutomatic rWeapon
 		fDamage = fDamageMax / 2
 	endif
@@ -112,7 +118,7 @@ begin Function {}
 	endif
 
 	; Settings
-	fDistanceMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 0
+	fDistanceMax = (Goo1.AuxVarGetFlt "*ScrBld_INI" 0) * 69.99104
 	fHeadingMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 1
 
 	; Position calculation
@@ -135,10 +141,8 @@ begin Function {}
 
 			; Splatter duration
 			fDuration = Goo1.AuxVarGetFlt "*ScrBld_SPL" 1
-			if eval GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" > 0
-				fDuration *= Goo1.AuxVarGetFlt "*ScrBld_MOD" 0
-			elseif eval GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" > 0 || GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" > 0
-				fDuration *= Goo1.AuxVarGetFlt "*ScrBld_MOD" 1
+			if eval GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" > 0 || GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" > 0 || GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" > 0
+				fDuration = Goo1.AuxVarGetFlt "*ScrBld_SPL" 14
 			endif
 
 			; Splatter size

@@ -6,20 +6,12 @@ ref rWeapon
 begin Function {}
 
 	; Validate ref, cooldown, creature type, distance
-	if eval IsReference (rTarget = This) == 0 || Goo1.AuxVarGetFlt "*ScrBld_Timer" 1 || (rTarget.GetCreatureType == 6 && Goo1.AuxVarGetFlt "*ScrBld_INI" 7 == 0) || Player.GetDistance3D rTarget >= Goo1.AuxVarGetFlt "*ScrBld_INI" 0 ; || rTarget == Player
+	if eval IsReference (rTarget = This) == 0 || (rTarget == Player && Goo1.AuxVarGetFlt "*ScrBld_INI" 13 != 2) || (rTarget != Player && Goo1.AuxVarGetFlt "*ScrBld_INI" 14 == 0) || Goo1.AuxVarGetFlt "*ScrBld_Timer" 1 || (rTarget.GetCreatureType == 6 && Goo1.AuxVarGetFlt "*ScrBld_INI" 7 == 0) || Player.GetDistance3D rTarget >= ((Goo1.AuxVarGetFlt "*ScrBld_INI" 0) * 69.99104)
 		return
 	endif
 
-	; Helmet check
-	;if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 8
-	;	iBitMask = Player.GetEquippedItemsAsBitMask
-	;	if eval GetBit iBitMask 10 == 0 && GetBit iBitMask 11 == 0
-	;		return
-	;	endif
-	;endif
-
 	; Overlay check
-	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 8 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" == 0 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" == 0 && GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" == 0
+	if eval Goo1.AuxVarGetFlt "*ScrBld_INI" 8 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Helmet\visible" != 1 && GetUIFloatAlt "HUDMainMenu\HelmetOverlay\Glasses\visible" != 1 && GetUIFloatAlt "HUDMainMenu\ModernNightVision\_AlphaOverlay" != 1
 		return
 	endif
 
