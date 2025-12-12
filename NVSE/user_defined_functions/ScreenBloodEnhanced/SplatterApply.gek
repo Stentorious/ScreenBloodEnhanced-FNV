@@ -117,15 +117,13 @@ begin Function {}
 		endif
 	endif
 
-	; Settings
-	fDistanceMax = (Goo1.AuxVarGetFlt "*ScrBld_INI" 0) * 69.99104
-	fHeadingMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 1
-
 	; Position calculation
 	if eval rTarget == Player
 		fDistance = 1
 		fHeading = 1
 	else
+		fDistanceMax = (Goo1.AuxVarGetFlt "*ScrBld_INI" 0) * 69.99104
+		fHeadingMax = Goo1.AuxVarGetFlt "*ScrBld_INI" 1
 		fDistance = (GetMaxOf 0 (fDistanceMax - (Player.GetDistance3D rTarget))) / fDistanceMax
 		fHeading = (GetMaxOf 0 (fHeadingMax - (Abs (Player.GetHeadingAngle rTarget)))) / fHeadingMax
 	endif
