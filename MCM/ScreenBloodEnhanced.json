@@ -16,7 +16,6 @@
 			"columns": 1,
 			"enable": 1,
 			"options": {
-
 				"1": {
 					"title": "$General",
 					"enable": 1,
@@ -82,7 +81,6 @@
 				},
 				"11": {
 					"title": "$AutoWipeDelay",
-					"enable": 1,
 					"type": 2.5,
 					"suffix": "s",
 					"state": { "form": "Goo1", "auxVar": "*ScrBld_INI", "key": 9, "value": 1, "disable": 1 },
@@ -98,7 +96,6 @@
 			"columns": 2,
 			"enable": 1,
 			"options": {
-
 				"1": {
 					"title": "$Visibility",
 					"enable": 1,
